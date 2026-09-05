@@ -90,10 +90,10 @@ Customers may be **B2C** (elders or their families) or **B2B** (e.g., care facil
 
 
 - Retire all 7 legacy Excel sheets within 1 month.
-- Automate at least 50% of customer record updates and routine tasks through AI by milestone M2.
+- Automate at least 50% of customer record updates and routine tasks through AI by milestone M5 (AI Ingestion).
 - Reduce inconsistencies between CRM, device inventory, and sales records by 80% within 3 months.
 - Cut operator time on manual data entry and cross-sheet reconciliation by 60% within 2 months.
-- Reach 95% on-time completion of operational tasks (consultation callbacks, trial follow-ups, device recovery, payment reminders) by milestone M4.
+- Reach 95% on-time completion of operational tasks (consultation callbacks, trial follow-ups, device recovery, payment reminders) by milestone M4 (Communication Management).
 
 
 
@@ -155,7 +155,7 @@ Customers may be **B2C** (elders or their families) or **B2B** (e.g., care facil
 ## Functional Requirements
 
 
-- Language: application must be in Japanese.
+- Language: application UI must support Japanese (default) and Korean, switchable per operator.
 - **Customer & CRM (Priority: Highest)**
  - Customer profile with basic info, customer type (B2C / B2B), source, preferred contact channel, and full journey-stage model. Customer type does not change the workflow — same funnel for both.
  - Customer journey stage model can be defined and configured.
@@ -255,7 +255,7 @@ The trial goes well and the customer decides on the spot to rent. Jin taps "log 
 
 
 - Legacy sheets retired (target: all 7 by month 5).
-- % of customer record and task updates performed by AI (target: ≥50% by M2).
+- % of customer record and task updates performed by AI (target: ≥50% by M5).
 - Operator time on data entry and context search (target: −60%).
 - On-time task completion, including consultation callbacks and post-trial decision follow-ups (target: ≥95% by M4).
 - % reduction in inconsistencies between CRM, device inventory, and sales ledger (target: −80%).
@@ -281,7 +281,7 @@ The trial goes well and the customer decides on the spot to rent. Jin taps "log 
 ### Business Metrics
 
 
-- Legacy tool deprecation complete by M5.
+- Legacy tool deprecation complete by M6 (Rollout).
 - Task SLA compliance (>95% on-time).
 - Customers handled per operator per week.
 - Visibility into trial-to-rental/purchase conversion by trial type (reporting, not a conversion target for the app itself).
@@ -330,7 +330,7 @@ The trial goes well and the customer decides on the spot to rent. Jin taps "log 
 
 - Modular, API-driven architecture: customer/CRM, trial, device inventory, payment, and communication modules.
 - Secure, auditable data store with role-based access and full edit history.
-- Mobile-optimized front end (iOS, Android, responsive web) with offline sync.
+- Mobile-optimized front end (responsive web).
 - AI/ML services for ingestion, deduplication, transcription, and summarization.
 
 
@@ -361,38 +361,48 @@ The trial goes well and the customer decides on the spot to rent. Jin taps "log 
 
 
 
-**Foundation**
+Milestones follow the functional-requirement priority order: CRM (Highest) first, then the Medium-priority modules, with AI-powered ingestion (Low) sequenced last before rollout.
+
+
+**M1 — Foundation (CRM, Highest)**
 
 
 - CRM structure, journey-stage data model (including the three trial types and consultation gate), core UI, mobile onboarding.
 - Dependencies: operator input on data model and stage definitions.
 
 
-**AI Ingestion & Task Automation Rules**
+**M2 — Trial-Process Task Automation & Dashboard (CRM, Highest)**
 
 
-- AI ingestion pipeline; trial-process task-generation rules (consultation gate, decision follow-ups); review queue; first dashboard.
+- Trial-process task-generation rules (consultation gate, decision follow-ups, device recovery); task dashboard with at-risk surfacing.
 - Dependencies: stable data model from Foundation.
 
 
 
 
-**Device Inventory & Payment Modules**
+**M3 — Device Inventory & Payment Modules (Medium)**
 
 
 - Serial-level device tracking, shipping/recovery flows, trial-fee and rental payment tracking.
 - Dependencies: operator testing of core modules.
 
 
-**Communication & Task Automation**
+**M4 — Communication Management (Medium)**
 
 
-- Integrated communication channels (call, email, SMS, LINE), preferred-channel logic, automated task generation (decision follow-ups, recovery tasks).
-- AI-powered communication draft and operator approval for sends
+- Integrated communication channels (call, email, SMS, LINE), preferred-channel logic, quick actions with auto-logging.
+- AI-powered communication draft and operator approval for sends.
 - Dependencies: trial workflow and core CRM live.
 
 
-**Rollout, Training & Sheet Retirement**
+**M5 — AI Ingestion & Review Queue (Low)**
+
+
+- AI ingestion pipeline from web forms, email, and LINE; deduplication with review queue; takeover-ready summaries and suggested next actions; AI chat search.
+- Dependencies: stable CRM data model and task rules; communication channels connected for auto-logging.
+
+
+**M6 — Rollout, Training & Sheet Retirement**
 
 
 - Phased migration, training, feedback analysis, final sheet deprecation.
