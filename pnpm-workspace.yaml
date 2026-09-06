@@ -1,0 +1,12 @@
+# Which dependencies may run install scripts. Explicit so CI installs are
+# reproducible and no new postinstall script runs unreviewed.
+allowBuilds:
+  "@prisma/engines": true # query engine binary; Prisma cannot run without it
+  prisma: true # CLI engine download
+  esbuild: true # used by tsx for the seed script
+  "@parcel/watcher": false
+  "@swc/core": false
+  sharp: false
+  unrs-resolver: false
+  protobufjs: false
+  "@sentry/cli": true # downloads the CLI binary used for source-map upload

@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Journey stages are operator-configurable data, not an enum — the PRD
+/// requires stages to be editable without a deploy. Seeded from PRD.md;
+/// stage management UI belongs to the CRM roadmap item.
+model JourneyStage {
+  id        String   @id @default(uuid()) @db.Uuid
+  /// Stable machine-readable identifier; safe to reference from code.
+  key       String   @unique
+  /// Operator-facing label. Localization belongs to the CRM item.
+  label     String
+  /// Display order. Unique so two stages cannot silently tie.
+  position  Int      @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([position])
+  @@map("journey_stage")
+}
