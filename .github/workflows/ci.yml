@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck, lint, and unit tests
+    runs-on: ubuntu-latest
+
+    # No database and no secrets: prisma generate only reads the schema, and the
+    # unit suite is pure functions. Playwright is deliberately excluded — it needs
+    # the Docker Postgres the runner does not have. See spec.md -> Testing strategy.
+    env:
+      # next build and the env module both run as production here; these are
+      # placeholders, never used to connect to anything.
+      DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
+      DIRECT_URL: postgresql://placeholder:placeholder@localhost:5433/placeholder
+      NEXT_PUBLIC_SENTRY_DSN: https://1234567890abcdef1234567890abcdef@o1234567.ingest.sentry.io/1234567
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm exec prisma generate
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
