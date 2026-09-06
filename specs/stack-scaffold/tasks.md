@@ -2,7 +2,7 @@
 
 Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task ends at a verifiable state.
 
-- [ ] **T1 — Repo baseline**
+- [x] **T1 — Repo baseline**
   - Refs: `spec.md` → Scope, Technical approach; `plan.md` → step 1 (C1)
   - Acceptance: Next.js App Router app on pnpm at the repository root with TypeScript strict, Tailwind, ESLint and Prettier. Scripts `dev`, `build`, `start`, `typecheck`, `lint`, `format`, `test` exist. Pre-existing tracked files (`PRD.md`, `README.md`, `ROADMAP.md`, `tech-stack.md`, `specs/`) are untouched. `.gitignore` covers `node_modules`, `.next`, `.env*` except `.env.example`.
   - Tests: None — this task creates the harness the later tests run in; proven by T2's first assertion.
