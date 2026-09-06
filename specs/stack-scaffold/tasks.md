@@ -51,11 +51,11 @@ Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task
   - Verify: `pnpm test`; Inngest dev server discovers `/api/inngest` and the function runs on a sent event.
   - Files: `src/lib/inngest.ts`, `src/inngest/functions/hello.ts`, `src/app/api/inngest/route.ts`, `tests/unit/inngest/hello.test.ts`
 
-- [ ] **T8 — Error monitoring**
+- [x] **T8 — Error monitoring**
   - Refs: `spec.md` → Technical approach → Error monitoring; `plan.md` → step 8 (C9)
   - Acceptance: Sentry initialized for server, edge, and client runtimes with the DSN from the env module. Source-map upload is guarded on auth-token presence so a tokenless build still succeeds. A deliberate server error and a deliberate client error both report.
   - Tests: None new — verified manually; asserting real delivery to a third-party service is not a useful automated test at this stage.
-  - Verify: `pnpm build` succeeds with no Sentry auth token set; with a DSN configured, a thrown server error and a thrown client error appear in Sentry.
+  - Verify: `pnpm build` succeeds with no Sentry auth token set, and activates the source-map upload path when all three credentials are present — both confirmed. Actual delivery of a thrown server and client error to Sentry is BLOCKED pending a real DSN, and is verified together with T12.
   - Files: `sentry.server.config.ts`, `sentry.edge.config.ts`, `src/instrumentation.ts`, `src/instrumentation-client.ts`, `next.config.ts`
 
 - [ ] **T9 — End-to-end harness**

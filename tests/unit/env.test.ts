@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseEnv } from "@/lib/env";
+import { assertRuntimeEnv, parseEnv } from "@/lib/env";
 
 const valid = {
   DATABASE_URL: "postgresql://user:pw@pooler.example.com:6543/postgres?pgbouncer=true",
@@ -42,21 +42,34 @@ describe("parseEnv", () => {
     );
   });
 
-  it("requires the Inngest keys in production only", () => {
-    const production = { ...valid, NODE_ENV: "production" };
-    expect(() => parseEnv(production)).toThrow(/INNGEST_EVENT_KEY/);
-    expect(() => parseEnv(production)).toThrow(/INNGEST_SIGNING_KEY/);
-
-    expect(() =>
-      parseEnv({ ...production, INNGEST_EVENT_KEY: "k", INNGEST_SIGNING_KEY: "s" }),
-    ).not.toThrow();
-
-    // Local development runs against the Inngest dev server, which needs neither.
-    expect(() => parseEnv(valid)).not.toThrow();
-  });
-
   it("defaults NODE_ENV to development when unset", () => {
     const { NODE_ENV: _omitted, ...rest } = valid;
     expect(parseEnv(rest).NODE_ENV).toBe("development");
+  });
+});
+
+describe("assertRuntimeEnv", () => {
+  const production = { ...valid, NODE_ENV: "production" };
+
+  it("requires the Inngest keys in production", () => {
+    expect(() => assertRuntimeEnv(production)).toThrow(/INNGEST_EVENT_KEY/);
+    expect(() => assertRuntimeEnv(production)).toThrow(/INNGEST_SIGNING_KEY/);
+  });
+
+  it("passes in production once they are set", () => {
+    expect(() =>
+      assertRuntimeEnv({ ...production, INNGEST_EVENT_KEY: "k", INNGEST_SIGNING_KEY: "s" }),
+    ).not.toThrow();
+  });
+
+  it("does not require them outside production", () => {
+    // Local development runs against the Inngest dev server, which needs neither.
+    expect(() => assertRuntimeEnv(valid)).not.toThrow();
+  });
+
+  it("leaves parseEnv free of them, so builds without runtime secrets succeed", () => {
+    // `next build` runs with NODE_ENV=production on a machine holding no
+    // runtime secrets; folding these into the schema breaks every CI build.
+    expect(() => parseEnv(production)).not.toThrow();
   });
 });

@@ -39,20 +39,6 @@ export const envSchema = z
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   })
   .superRefine((value, ctx) => {
-    if (value.NODE_ENV === "production") {
-      // Without these, /api/inngest answers 500 at request time rather than
-      // failing at boot — the exact opaque failure this module exists to avoid.
-      for (const key of ["INNGEST_EVENT_KEY", "INNGEST_SIGNING_KEY"] as const) {
-        if (!value[key]) {
-          ctx.addIssue({
-            code: "custom",
-            path: [key],
-            message: `${key} is required in production; Inngest runs in cloud mode there.`,
-          });
-        }
-      }
-    }
-
     if (value.DATABASE_URL === value.DIRECT_URL) {
       ctx.addIssue({
         code: "custom",
@@ -77,6 +63,42 @@ export function parseEnv(source: NodeJS.ProcessEnv | Record<string, unknown>): E
   }
 
   return result.data;
+}
+
+/**
+ * Secrets that only a running production server needs.
+ *
+ * Deliberately not part of the schema: `next build` runs with NODE_ENV set to
+ * production on a machine that has no runtime secrets, so folding these into
+ * `parseEnv` would fail every CI and Vercel build. Enforced at server startup
+ * instead — see `assertRuntimeEnv`.
+ */
+const productionRuntimeSecrets = ["INNGEST_EVENT_KEY", "INNGEST_SIGNING_KEY"] as const;
+
+/**
+ * Checks the production-only runtime secrets. Without these, /api/inngest
+ * answers 500 at request time rather than failing at boot.
+ */
+export function assertRuntimeEnv(
+  source: NodeJS.ProcessEnv | Record<string, unknown> = process.env,
+): Env {
+  const parsed = parseEnv(source);
+
+  if (parsed.NODE_ENV !== "production") {
+    return parsed;
+  }
+
+  const missing = productionRuntimeSecrets.filter((key) => !parsed[key]);
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Invalid environment configuration:\n${missing
+        .map((key) => `  ${key}: required in production; Inngest runs in cloud mode there.`)
+        .join("\n")}`,
+    );
+  }
+
+  return parsed;
 }
 
 let cached: Env | undefined;

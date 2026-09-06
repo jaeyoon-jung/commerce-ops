@@ -9,3 +9,4 @@ allowBuilds:
   sharp: false
   unrs-resolver: false
   protobufjs: set this to true or false
+  "@sentry/cli": set this to true or false
