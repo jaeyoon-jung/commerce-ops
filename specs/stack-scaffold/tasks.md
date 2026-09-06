@@ -23,7 +23,7 @@ Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task
   - Verify: `pnpm test`; `pnpm dev` then check `/`, `/ja`, `/ko`, `/fr`.
   - Files: `src/i18n/routing.ts`, `src/i18n/request.ts`, `src/middleware.ts`, `messages/ja.json`, `messages/ko.json`, `src/app/[locale]/layout.tsx`, `src/app/[locale]/page.tsx`, `tests/unit/i18n.test.ts`. Exceeds five because next-intl's routing rewrite is a single indivisible move of the app tree; an intermediate commit would leave the app unroutable.
 
-- [ ] **T4 — UI baseline**
+- [x] **T4 — UI baseline**
   - Refs: `spec.md` → Scope; `plan.md` → step 4 (C5)
   - Acceptance: shadcn/ui initialized against the installed Tailwind major, with its config and utility helper committed. The locale layout is mobile-first and uses at least one real shadcn component. All visible text resolves through next-intl.
   - Tests: None new — the rendered component is asserted by `e2e/smoke.spec.ts` in T9.

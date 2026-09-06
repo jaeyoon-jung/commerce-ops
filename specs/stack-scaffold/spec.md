@@ -56,6 +56,8 @@ No project baseline exists yet; this feature establishes it. All choices follow 
 
 Layout follows Next.js conventions with a `src/` root and module boundaries reserved (not yet populated) for the domains `tech-stack.md` names: crm, trials, devices, payments, comms, ingestion. Cross-cutting concerns live in dedicated modules from day one so later features have an obvious home: environment parsing, the Prisma client singleton, the Inngest client, and i18n configuration.
 
+**UI primitives.** `tech-stack.md` names shadcn/ui for its Radix primitives. The current shadcn release ships its default style on Base UI rather than Radix. Base UI is built by the same maintainers and provides the same accessibility guarantees the PRD requires — contrast, screen-reader support, keyboard navigation — so the substitution is accepted and recorded here rather than pinning shadcn to an older release. Components use Base UI's `render` prop where Radix used `asChild`.
+
 **Environment configuration.** A single Zod-validated environment module is the only place `process.env` is read. It distinguishes the pooled runtime connection from the direct/session connection used for migrations, and separates server-only secrets from `NEXT_PUBLIC_` values. Validation runs at import time so a misconfigured deployment fails at boot.
 
 **Database connectivity.** Prisma uses two URLs: a transaction-pooler URL for application queries (serverless functions open many short-lived connections) and a session-mode URL for migrations. The GitHub Actions runner is IPv4-only while Supabase's direct host resolves IPv6-only, so the migration job connects through the session-mode pooler host in `ap-northeast-1` rather than the direct host. The Prisma client is a module-level singleton guarded against hot-reload duplication in development.
@@ -101,6 +103,7 @@ No OAuth scopes. Docker is required locally for the development database. The im
 
 - **pnpm over npm.** Chosen for install speed; requires the corresponding package manager setting in Vercel and a matching setup step in CI.
 - **Eight seeded stages, not the PRD's literal six.** The PRD's sixth line collapses Closed Won, On Hold, and Closed Lost; they are seeded separately because On Hold is not terminal and at-risk surfacing will need to distinguish them.
+- **Base UI accepted in place of Radix.** Current shadcn generates Base UI components; `tech-stack.md` assumed Radix. Same maintainers, same accessibility bar, and pinning shadcn backwards to keep Radix would cost more than it buys. `tech-stack.md` should be updated when it is next revised.
 - **`journey_stage` over a throwaway health table.** A real, foundational table proves the migrate → seed → query path and survives into the CRM item, rather than being deleted.
 - **Migrations in CI on merge, not in the Vercel build command.** Prevents preview builds from migrating production and decouples schema changes from deploy health.
 - **RLS on with deny-all now.** Cheap to add at table creation, and avoids a window where anon-key reads are possible before the auth item lands.
