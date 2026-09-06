@@ -9,7 +9,7 @@ Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task
   - Verify: `pnpm install && pnpm typecheck && pnpm lint && pnpm build`; `git status` shows only additions.
   - Files: generated Next.js skeleton (`package.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `.gitignore`, `src/app/*`). Exceeds five files because a framework scaffold is atomic — splitting it produces intermediate states that neither build nor typecheck.
 
-- [ ] **T2 — Environment module and test harness**
+- [x] **T2 — Environment module and test harness**
   - Refs: `spec.md` → Technical approach → Environment configuration, Testing strategy; `plan.md` → step 2 (C2, C3)
   - Acceptance: A single Zod-validated module is the only reader of `process.env`. It separates the pooled runtime URL from the direct/session URL, and server secrets from `NEXT_PUBLIC_` values. Import-time validation throws naming the offending variables. `.env.example` lists every variable with a placeholder and no real secret. Vitest is configured with unit tests under `tests/unit/`.
   - Tests: `tests/unit/env.test.ts` — rejects missing/blank `DATABASE_URL`, `DIRECT_URL`, and the Sentry DSN; accepts a valid set; keeps pooled and direct URLs distinct.
