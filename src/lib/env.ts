@@ -39,6 +39,20 @@ export const envSchema = z
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   })
   .superRefine((value, ctx) => {
+    if (value.NODE_ENV === "production") {
+      // Without these, /api/inngest answers 500 at request time rather than
+      // failing at boot — the exact opaque failure this module exists to avoid.
+      for (const key of ["INNGEST_EVENT_KEY", "INNGEST_SIGNING_KEY"] as const) {
+        if (!value[key]) {
+          ctx.addIssue({
+            code: "custom",
+            path: [key],
+            message: `${key} is required in production; Inngest runs in cloud mode there.`,
+          });
+        }
+      }
+    }
+
     if (value.DATABASE_URL === value.DIRECT_URL) {
       ctx.addIssue({
         code: "custom",

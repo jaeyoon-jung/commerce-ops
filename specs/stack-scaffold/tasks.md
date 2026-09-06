@@ -44,7 +44,7 @@ Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task
   - Verify: `curl` the route with Docker up (200, count 8) and with Docker stopped (non-200, no stack trace).
   - Files: `src/app/api/health/route.ts`
 
-- [ ] **T7 — Background jobs**
+- [x] **T7 — Background jobs**
   - Refs: `spec.md` → Technical approach → Background jobs; `plan.md` → step 7 (C8)
   - Acceptance: A single exported Inngest client configured from the env module. One hello-world function whose handler is a plain exported function, directly callable without the Inngest runtime. `/api/inngest` serves the handler and lists registered functions.
   - Tests: `tests/unit/inngest/hello.test.ts` — the handler, invoked directly with an event payload, returns the expected result.

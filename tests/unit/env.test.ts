@@ -42,6 +42,19 @@ describe("parseEnv", () => {
     );
   });
 
+  it("requires the Inngest keys in production only", () => {
+    const production = { ...valid, NODE_ENV: "production" };
+    expect(() => parseEnv(production)).toThrow(/INNGEST_EVENT_KEY/);
+    expect(() => parseEnv(production)).toThrow(/INNGEST_SIGNING_KEY/);
+
+    expect(() =>
+      parseEnv({ ...production, INNGEST_EVENT_KEY: "k", INNGEST_SIGNING_KEY: "s" }),
+    ).not.toThrow();
+
+    // Local development runs against the Inngest dev server, which needs neither.
+    expect(() => parseEnv(valid)).not.toThrow();
+  });
+
   it("defaults NODE_ENV to development when unset", () => {
     const { NODE_ENV: _omitted, ...rest } = valid;
     expect(parseEnv(rest).NODE_ENV).toBe("development");
