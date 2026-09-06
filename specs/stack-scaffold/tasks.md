@@ -65,7 +65,7 @@ Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task
   - Verify: `pnpm exec playwright test` green with Docker Postgres up and the database seeded.
   - Files: `playwright.config.ts`, `e2e/smoke.spec.ts`, `package.json`, `.gitignore`
 
-- [ ] **T10 — Continuous integration**
+- [x] **T10 — Continuous integration**
   - Refs: `spec.md` → Technical approach → Migration flow, Success criteria 9–10; `plan.md` → step 10 (C11)
   - Acceptance: A PR workflow installs with pnpm, runs `prisma generate`, `typecheck`, `lint`, and the unit suite, and needs no database or secret. A separate `main` workflow runs `prisma migrate deploy` against Supabase through the session-mode pooler host, using a repository secret, gated behind the test job. Playwright is not run in CI.
   - Tests: None new — the workflow's job is to execute the existing suite.
