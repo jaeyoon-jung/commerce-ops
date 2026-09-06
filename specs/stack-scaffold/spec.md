@@ -43,7 +43,7 @@ The scaffold's job is to prove each layer of `tech-stack.md` is wired and verifi
 
 The only "user" at this stage is a developer or an agent working in the repository; there is no operator-facing feature. Observable behavior:
 
-- Visiting `/` redirects to `/ja`. `/ja` and `/ko` each render the scaffold's placeholder page in that locale, using a shadcn component and the mobile-first layout. An unsupported locale segment (`/fr`) returns Next.js's 404.
+- Visiting `/` redirects to `/ja`. `/ja` and `/ko` each render the scaffold's placeholder page in that locale, using a shadcn component and the mobile-first layout. An unsupported locale segment (`/fr`) is treated by next-intl as a path rather than a locale: it redirects to `/ja/fr`, which returns Next.js's 404.
 - `/api/health` returns HTTP 200 with a small JSON body reporting database reachability and the number of seeded journey stages. When the database is unreachable it returns a non-200 with an error indicator and no stack trace in the body; the error is reported to Sentry.
 - `/api/inngest` serves the Inngest handler so the local dev server and Inngest Cloud can discover registered functions.
 - Missing or malformed environment variables fail fast at startup with a message naming the offending variables, rather than surfacing later as an opaque runtime error.

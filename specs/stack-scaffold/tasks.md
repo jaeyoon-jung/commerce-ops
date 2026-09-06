@@ -16,9 +16,9 @@ Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task
   - Verify: `pnpm test`; blanking a required variable and running `pnpm build` fails with that variable named.
   - Files: `src/lib/env.ts`, `.env.example`, `vitest.config.ts`, `tests/unit/env.test.ts`, `package.json`
 
-- [ ] **T3 — i18n routing skeleton**
+- [x] **T3 — i18n routing skeleton**
   - Refs: `spec.md` → Scope, User-facing behavior; `plan.md` → step 3 (C4)
-  - Acceptance: next-intl pinned. `[locale]` segment routing with `ja` default and `ko` second. `/` redirects to `/ja`; `/ko` renders Korean; an unsupported locale 404s. Both message files exist, are non-empty, and hold every scaffold string — no hard-coded strings in components.
+  - Acceptance: next-intl pinned. `[locale]` segment routing with `ja` default and `ko` second. `/` redirects to `/ja`; `/ko` renders Korean; an unsupported locale segment redirects into the default locale and 404s there. Both message files exist, are non-empty, and hold every scaffold string — no hard-coded strings in components.
   - Tests: `tests/unit/i18n.test.ts` — `messages/ja.json` and `messages/ko.json` have identical key sets; default locale is `ja`; configured locales are exactly `[ja, ko]`.
   - Verify: `pnpm test`; `pnpm dev` then check `/`, `/ja`, `/ko`, `/fr`.
   - Files: `src/i18n/routing.ts`, `src/i18n/request.ts`, `src/middleware.ts`, `messages/ja.json`, `messages/ko.json`, `src/app/[locale]/layout.tsx`, `src/app/[locale]/page.tsx`, `tests/unit/i18n.test.ts`. Exceeds five because next-intl's routing rewrite is a single indivisible move of the app tree; an intermediate commit would leave the app unroutable.
