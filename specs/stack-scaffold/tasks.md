@@ -30,7 +30,7 @@ Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task
   - Verify: `pnpm lint && pnpm build`; both locales render the component.
   - Files: `components.json`, `src/lib/utils.ts`, `src/components/ui/*`, `src/app/[locale]/page.tsx`, `src/app/globals.css`
 
-- [ ] **T5 — Data layer**
+- [x] **T5 — Data layer**
   - Refs: `spec.md` → Data model changes, Technical approach → Database connectivity and RLS; `plan.md` → step 5 (C6)
   - Acceptance: Docker Compose runs Postgres on a non-default host port. Prisma schema defines `journey_stage` with a unique machine key, unique sort position, non-null label, timestamps, and an index on sort position. The initial migration is hand-extended to enable RLS with no policy. The seed idempotently upserts the eight stages in PRD order. The Prisma client is a hot-reload-safe singleton.
   - Tests: None new — CI has no Postgres by decision, so DB assertions are covered by `e2e/smoke.spec.ts` in T9 against local Docker.
