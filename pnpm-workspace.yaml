@@ -8,5 +8,5 @@ allowBuilds:
   "@swc/core": false
   sharp: false
   unrs-resolver: false
-  protobufjs: set this to true or false
-  "@sentry/cli": set this to true or false
+  protobufjs: false
+  "@sentry/cli": true # downloads the CLI binary used for source-map upload
