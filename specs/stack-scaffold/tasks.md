@@ -37,7 +37,7 @@ Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task
   - Verify: `docker compose up -d`; `pnpm prisma migrate dev`; run the seed twice and confirm eight rows both times; catalog query confirms `relrowsecurity` true with zero policies.
   - Files: `docker-compose.yml`, `prisma/schema.prisma`, `prisma/migrations/*/migration.sql`, `prisma/seed.ts`, `src/lib/prisma.ts`
 
-- [ ] **T6 — Health route**
+- [x] **T6 — Health route**
   - Refs: `spec.md` → User-facing behavior; `plan.md` → step 6 (C7)
   - Acceptance: `/api/health` returns 200 with JSON reporting database reachability and the journey-stage count. With the database stopped it returns a non-200 with an error indicator and no stack trace in the body, and reports to Sentry once T8 lands.
   - Tests: None new — asserted by `e2e/smoke.spec.ts` in T9.
