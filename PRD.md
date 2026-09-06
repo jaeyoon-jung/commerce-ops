@@ -38,6 +38,7 @@ Customers may be **B2C** (elders or their families) or **B2B** (e.g., care facil
 - **Decision timing:** for supervised trials, the purchase/rental decision is made on the spot at the trial. For non-supervised trials, the decision is made after the trial period ends — requiring a scheduled follow-up.
 - **Trial payment:** at-home trials (both types) are paid; the app must invoice and track trial fees.
 - **Post-trial follow-up = customer support**, conducted via email, LINE, and phone.
+- **One next step per customer:** a customer record carries exactly one open next step at a time — the single documented action that moves that customer forward, with an owner and a due date. Process events propose it; completing it is what sets the following one. This is deliberately not a per-customer task list — the queue lives *across* customers, not inside one.
 
 
 **Customer journey stages**
@@ -90,10 +91,10 @@ Customers may be **B2C** (elders or their families) or **B2B** (e.g., care facil
 
 
 - Retire all 7 legacy Excel sheets within 1 month.
-- Automate at least 50% of customer record updates and routine tasks through AI by milestone M5 (AI Ingestion).
+- Automate at least 50% of customer record updates and next-step proposals through AI by milestone M5 (AI Ingestion).
 - Reduce inconsistencies between CRM, device inventory, and sales records by 80% within 3 months.
 - Cut operator time on manual data entry and cross-sheet reconciliation by 60% within 2 months.
-- Reach 95% on-time completion of operational tasks (consultation callbacks, trial follow-ups, device recovery, payment reminders) by milestone M4 (Communication Management).
+- Reach 95% on-time completion of customer next steps (consultation callbacks, trial follow-ups, device recovery, payment reminders) by milestone M4 (Communication Management).
 
 
 
@@ -105,8 +106,8 @@ Customers may be **B2C** (elders or their families) or **B2B** (e.g., care facil
 
 - Retrieve full customer context — journey stage, trial history, device assignment, interaction log — from any device, especially mobile during home visits.
 - Minimize manual logging; capture consultation and trial outcomes in one screen.
-- See a real-time view of each customer's journey stage and pending tasks.
-- Surface customers at risk of neglect: stalled consultations, non-supervised trials nearing decision date, overdue device recoveries.
+- See a real-time view of each customer's journey stage and their single open next step, with owner and due date.
+- Surface customers whose next step is at risk of neglect: stalled consultations, non-supervised trials nearing decision date, overdue device recoveries.
 - Full mobile access during field operations (in transit or at the customer's home).
 - Communicate with customers all from a single interface, regardless of channels, without switching to different apps like Line, Gmail, and SMS.
 
@@ -140,7 +141,8 @@ Customers may be **B2C** (elders or their families) or **B2B** (e.g., care facil
 - As a sales operator, I want a timeline of all interactions, trial events, notes, and status changes per customer, so that I can pick up seamlessly from teammates.
 - As a sales operator, I want to log notes and outcomes quickly by text or voice memo, so that documentation doesn't fall behind on busy days.
 - As a sales operator, I want leads from web forms, email, and LINE auto-ingested into customer records, so that I spend less time on manual entry.
-- As a sales operator, I want a dashboard of tasks by due date and journey stage, so that urgent actions — consultations owed, decisions pending, devices to recover — surface first.
+- As a sales operator, I want a dashboard of customers ordered by their next step's due date and journey stage, so that urgent actions — consultations owed, decisions pending, devices to recover — surface first.
+- As a sales operator, I want closing out a next step to require recording the outcome and setting the following one, so that no active customer is ever left without a documented next action — and so I never have to maintain a task list per customer.
 - As a sales operator, I want quick actions (call, email, send SMS, send LINE) on the customer record, so that I can reach the customer on their preferred channel instantly.
 - As a sales operator, I want edits tracked with user and timestamp, and records deactivated rather than deleted, for compliance and auditability.
 
@@ -161,13 +163,14 @@ Customers may be **B2C** (elders or their families) or **B2B** (e.g., care facil
  - Customer journey stage model can be defined and configured.
  - Timeline of all interactions, actions, status changes, and system updates per customer.
  - Mobile-friendly search across all primary fields (name, phone, email, device serial).
- - Task and next-step management with owner, due date, and status. Task-generation rules encode the trial process: website bookings and new inquiries create a "consultation required" task before a trial can be scheduled; non-supervised trial-period end creates a decision-follow-up task; a no-rental decision creates a device recovery task.
+ - Next-step management: each customer carries exactly one open next step — action type, owner, due date, status, and free-text detail — not a task list. Completing a next step requires recording the outcome and setting the following one (system-proposed, operator-editable); operators can also override or reschedule the open next step at any time.
+ - Next-step rules encode the trial process: website bookings and new inquiries set a "consultation required" next step before a trial can be scheduled; non-supervised trial-period end sets a decision follow-up; a no-rental decision sets a device recovery next step. When an event fires while a next step is already open, a configurable precedence order decides which one stands, and the superseded proposal is recorded on the timeline rather than silently dropped.
 
 
 - **AI-Powered Data Ingestion (Priority: Low)**
  - Auto-creation and updates of customer records from web forms (Wix, FormRun), email, and LINE/API submissions.
  - Deduplication on phone/email plus contextual signals; ambiguous matches routed to a review queue.
- - AI-generated, takeover-ready customer summaries and suggested next actions (e.g., "consultation not yet done — call via LINE, customer's responsive channel").
+ - AI-generated, takeover-ready customer summaries and a suggested next step (e.g., "consultation not yet done — call via LINE, customer's responsive channel").
 - **Communication Management (Priority: Medium)**
  - Integrated call, email, SMS, and LINE channels with auto-logging and quick actions; per-customer preferred-channel tracking.
  - Templated/autonomous sends for routine messages (trial confirmations, payment reminders); review-before-send for consultative messaging.
@@ -175,11 +178,11 @@ Customers may be **B2C** (elders or their families) or **B2B** (e.g., care facil
  
 - **Device Inventory & Order Management (Priority: Medium)**
  - Serial-level device tracking across device status
- - Assignment, shipping, recovery, and returns linked to customer and trial/order records; tasks auto-created based on device and customer statuses
+ - Assignment, shipping, recovery, and returns linked to customer and trial/order records; next steps proposed from device and customer status changes
  - Exception handling (duplicate assignment, address conflicts, inventory mismatch).
 - **Payment Tracking (Priority: Medium)**
  - Automated payment updates to reflect payment status from payment systems (Square, bank, etc.) with manual override; covers trial fees, rental billing, and purchases.
- - Partial/combo/refund handling and overdue logic with reminder tasks.
+ - Partial/combo/refund handling, and overdue logic that proposes a payment-reminder next step.
 
 
 ---
@@ -203,11 +206,11 @@ Customers may be **B2C** (elders or their families) or **B2B** (e.g., care facil
 **Core Experience**
 
 
-1. Operator opens the app (web app) and lands on a dashboard of active tasks and at-risk customers — overdue consultations,  trials awaiting decisions, devices pending recovery — with visual urgency cues.
-2. Operator searches for a customer by any identifier and instantly sees the journey stage, trial history, device assignment, and full timeline. Mobile UI is optimized for reading in transit
-3. Operator logs the outcome of a touchpoint (call, consultation, trial visit) via quick note and attaches the next action in one screen with minimal required fields. This includes the on-the-spot status updates.
-4. For new inquiries — including direct website bookings — the AI agent creates the customer record, fills in source/context, and creates the required consultation task.
-5. For existing leads., the AI agent identifies the relevant customer record and updates it, and created the required subsequent task.
+1. Operator opens the app (web app) and lands on a dashboard of customers whose next step is due or at risk — overdue consultations, trials awaiting decisions, devices pending recovery — one row per customer, with visual urgency cues.
+2. Operator searches for a customer by any identifier and instantly sees the journey stage, the open next step, trial history, device assignment, and full timeline. Mobile UI is optimized for reading in transit
+3. Operator logs the outcome of a touchpoint (call, consultation, trial visit) via quick note and sets the customer's next step in one screen with minimal required fields. This includes the on-the-spot status updates.
+4. For new inquiries — including direct website bookings — the AI agent creates the customer record, fills in source/context, and sets the required consultation next step.
+5. For existing leads, the AI agent identifies the relevant customer record, updates it, and proposes the subsequent next step.
 6. Communication (call, SMS, LINE) is initiated via quick action via CRM
 
 
@@ -241,7 +244,7 @@ Customers may be **B2C** (elders or their families) or **B2B** (e.g., care facil
 Jin, a sales operator, starts her day en route to an at-home supervised trial. Previously she'd dig through spreadsheet tabs on her phone, often finding outdated or missing context. Now one search shows the customer's full picture: the original website inquiry, the consultation call two weeks ago, customers' questions on LINE (the customer's preferred channel), the paid trial booking, the device serial assigned, and the note that the customer's daughter will be present.
 
 
-The trial goes well and the customer decides on the spot to rent. Jin taps "log notes," dumps raw notes, which is turned into timeline, and confirms the new sales outcomes — which triggers the contract and first-payment tasks automatically. Back on her dashboard she sees a trial ending Thursday; the app has already queued the decision follow-up call. With context a tap away and repetitive entry automated, Jin's team spends less time reconciling sheets and more time with customers, no trial goes unfollowed, and no rental device goes unrecovered.
+The trial goes well and the customer decides on the spot to rent. Jin taps "log notes," dumps raw notes, which is turned into timeline, and confirms the new sales outcomes — which advances that customer's next step to "send contract and collect first payment" automatically. Back on her dashboard she sees a customer whose trial ends Thursday; the app has already set their next step to the decision follow-up call. She never manages a to-do list per customer — each customer simply has one next thing, and the dashboard tells her whose is due. With context a tap away and repetitive entry automated, Jin's team spends less time reconciling sheets and more time with customers, no trial goes unfollowed, and no rental device goes unrecovered.
 
 
 ---
@@ -255,9 +258,10 @@ The trial goes well and the customer decides on the spot to rent. Jin taps "log 
 
 
 - Legacy sheets retired (target: all 7 by month 5).
-- % of customer record and task updates performed by AI (target: ≥50% by M5).
+- % of customer record updates and next-step proposals performed by AI (target: ≥50% by M5).
 - Operator time on data entry and context search (target: −60%).
-- On-time task completion, including consultation callbacks and post-trial decision follow-ups (target: ≥95% by M4).
+- On-time next-step completion, including consultation callbacks and post-trial decision follow-ups (target: ≥95% by M4).
+- Active customers with no open next step (target: ~0 — every active customer has a documented next action).
 - % reduction in inconsistencies between CRM, device inventory, and sales ledger (target: −80%).
 - Device recovery: zero devices unaccounted for after trial or rental end.
 
@@ -282,7 +286,7 @@ The trial goes well and the customer decides on the spot to rent. Jin taps "log 
 
 
 - Legacy tool deprecation complete by M6 (Rollout).
-- Task SLA compliance (>95% on-time).
+- Next-step SLA compliance (>95% on-time).
 - Customers handled per operator per week.
 - Visibility into trial-to-rental/purchase conversion by trial type (reporting, not a conversion target for the app itself).
 
@@ -308,6 +312,7 @@ The trial goes well and the customer decides on the spot to rent. Jin taps "log 
 
 - User actions: searches, log-flow completions, AI-assisted edits, manual overrides.
 - Journey-stage transitions and timestamps (consultation done, trial scheduled/completed, decision recorded, device recovered).
+- Next-step events: set, completed, rescheduled, overridden, superseded (with the rule that proposed it).
 - Sheet upload/removal events.
 
 
@@ -371,10 +376,10 @@ Milestones follow the functional-requirement priority order: CRM (Highest) first
 - Dependencies: operator input on data model and stage definitions.
 
 
-**M2 — Trial-Process Task Automation & Dashboard (CRM, Highest)**
+**M2 — Trial-Process Next-Step Automation & Dashboard (CRM, Highest)**
 
 
-- Trial-process task-generation rules (consultation gate, decision follow-ups, device recovery); task dashboard with at-risk surfacing.
+- Trial-process next-step rules (consultation gate, decision follow-ups, device recovery) with precedence resolution for competing proposals; cross-customer next-step dashboard with at-risk surfacing.
 - Dependencies: stable data model from Foundation.
 
 
@@ -398,8 +403,8 @@ Milestones follow the functional-requirement priority order: CRM (Highest) first
 **M5 — AI Ingestion & Review Queue (Low)**
 
 
-- AI ingestion pipeline from web forms, email, and LINE; deduplication with review queue; takeover-ready summaries and suggested next actions; AI chat search.
-- Dependencies: stable CRM data model and task rules; communication channels connected for auto-logging.
+- AI ingestion pipeline from web forms, email, and LINE; deduplication with review queue; takeover-ready summaries and suggested next steps; AI chat search.
+- Dependencies: stable CRM data model and next-step rules; communication channels connected for auto-logging.
 
 
 **M6 — Rollout, Training & Sheet Retirement**

@@ -20,17 +20,17 @@ Why: Operators need full customer context — stage, history, timeline — retri
 - [ ] Customer profiles with B2C/B2B type, source, preferred contact channel, and configurable journey-stage model (stages as data, not enums)
 - [ ] Per-customer timeline of interactions, notes, status changes, and system updates
 - [ ] Mobile-first search across name, phone, email, and device serial
-- [ ] Task management with owner, due date, and status, linked to customers
-- [ ] One-screen logging: capture a touchpoint outcome plus next action with minimal required fields, including on-the-spot status updates and voice-memo capture with Whisper transcription
+- [ ] Single open next step per customer — action type, owner, due date, status, detail — where completing one requires logging the outcome and setting the following one (no per-customer task lists)
+- [ ] One-screen logging: capture a touchpoint outcome plus the customer's next step with minimal required fields, including on-the-spot status updates and voice-memo capture with Whisper transcription
 
 ---
 
 **Goal:** Trial-process automation & operator dashboard
 Why: The consultation gate and decision-timing rules are the business process — encoding them is what makes sure no trial goes unfollowed and no device goes unrecovered.
 
-- [ ] Task-generation rule engine: new inquiries and website bookings create a consultation-required task before any trial can be confirmed; non-supervised trial end creates a decision follow-up; a no-rental decision creates a device recovery task
+- [ ] Next-step rule engine: new inquiries and website bookings set a consultation-required next step before any trial can be confirmed; non-supervised trial end sets a decision follow-up; a no-rental decision sets a device recovery next step — with a configurable precedence order resolving competing proposals and superseded ones logged to the timeline
 - [ ] Trial records covering all three trial types (onsite supervised, at-home supervised, at-home non-supervised) with the consultation gate enforced at booking
-- [ ] Dashboard of tasks by due date and journey stage with at-risk surfacing: stalled consultations, trials nearing decision date, overdue recoveries, with urgency cues
+- [ ] Cross-customer dashboard, one row per customer, ordered by next-step due date and journey stage, with at-risk surfacing: stalled consultations, trials nearing decision date, overdue recoveries, active customers missing a next step, with urgency cues
 
 ---
 
@@ -38,7 +38,7 @@ Why: The consultation gate and decision-timing rules are the business process �
 Why: Serial-level device visibility is what makes "zero devices unaccounted for" achievable after trials and rentals end.
 
 - [ ] Serial-level device registry with the full status lifecycle (new/used, inventory, assigned, shipping, in use, repair, awaiting collection, returned)
-- [ ] Assignment, shipping, recovery, and return flows linked to customer and trial/order records, with tasks auto-created from device and customer status changes
+- [ ] Assignment, shipping, recovery, and return flows linked to customer and trial/order records, with next steps proposed from device and customer status changes
 - [ ] Exception handling: duplicate assignment, address conflicts, inventory mismatch
 
 ---
@@ -48,7 +48,7 @@ Why: Trial fees, rental billing, and purchases currently reconcile by hand acros
 
 - [ ] Payment records for trial fees, rental billing, and purchases with the PRD status model (billed → partially paid → paid → overdue → refunded)
 - [ ] Automated status updates from Square webhooks plus bank CSV import, with manual override
-- [ ] Partial/combo/refund handling and overdue logic that generates reminder tasks
+- [ ] Partial/combo/refund handling and overdue logic that proposes a payment-reminder next step
 
 ---
 
@@ -64,10 +64,10 @@ Why: Operators should reach customers on their preferred channel from one interf
 **Goal:** AI ingestion & review queue
 Why: Half of routine record updates must come from AI (PRD M5 target), but ambiguous writes must never silently corrupt customer records.
 
-- [ ] Ingestion pipeline (Inngest): Wix/FormRun webhooks, email, and LINE submissions create or update customer records and the required follow-on tasks via GLM structured extraction
+- [ ] Ingestion pipeline (Inngest): Wix/FormRun webhooks, email, and LINE submissions create or update customer records and set the required follow-on next step via GLM structured extraction
 - [ ] Deduplication on phone/email plus contextual signals, with ambiguous matches routed to a review queue instead of auto-written
 - [ ] Japanese extraction-quality evaluation on real consultation notes, gating how much ingestion runs unreviewed (model swap via OpenRouter config if GLM underperforms)
-- [ ] Takeover-ready AI customer summaries and suggested next actions on the customer record
+- [ ] Takeover-ready AI customer summaries and a suggested next step on the customer record
 - [ ] AI-powered search and analysis via chat interface over read-only query tools
 
 ---
@@ -77,5 +77,5 @@ Why: The app only wins when all 7 legacy Excel sheets are gone and operators tru
 
 - [ ] Bulk import for legacy sheet data with validation and a phased per-sheet migration path
 - [ ] Guided operator onboarding: mobile-first walkthrough of create-customer → consultation → trial → log-outcome
-- [ ] Metrics instrumentation per the PRD tracking plan: searches, log-flow completions, AI-assisted edits and overrides, stage-transition timestamps, sheet retirement events
+- [ ] Metrics instrumentation per the PRD tracking plan: searches, log-flow completions, AI-assisted edits and overrides, stage-transition timestamps, next-step set/completed/superseded events, sheet retirement events
 - [ ] Final sheet deprecation: reconciliation checks against legacy data, then retire all 7 sheets
