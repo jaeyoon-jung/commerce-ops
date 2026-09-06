@@ -58,7 +58,7 @@ Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task
   - Verify: `pnpm build` succeeds with no Sentry auth token set, and activates the source-map upload path when all three credentials are present — both confirmed. Actual delivery of a thrown server and client error to Sentry is BLOCKED pending a real DSN, and is verified together with T12.
   - Files: `sentry.server.config.ts`, `sentry.edge.config.ts`, `src/instrumentation.ts`, `src/instrumentation-client.ts`, `next.config.ts`
 
-- [ ] **T9 — End-to-end harness**
+- [x] **T9 — End-to-end harness**
   - Refs: `spec.md` → Testing strategy; `plan.md` → step 9 (C10)
   - Acceptance: Playwright configured to boot the app itself, excluded from CI per decision. The smoke spec covers locale routing, the rendered component, and the health payload in one pass.
   - Tests: `e2e/smoke.spec.ts` — app boots; `/` redirects to `/ja`; a shadcn component renders; `/ko` renders the Korean string; `/api/health` returns 200 with a reachable database and eight seeded stages.

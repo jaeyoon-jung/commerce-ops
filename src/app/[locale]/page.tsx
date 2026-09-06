@@ -17,6 +17,10 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <p className="text-sm">{t("scaffoldNotice")}</p>
 
       <Button
+        // This renders an anchor, not a <button>. Telling Base UI so keeps the
+        // element's semantics honest for screen readers and keyboard users —
+        // the accessibility bar the PRD sets.
+        nativeButton={false}
         className="w-full sm:w-auto"
         render={<Link href="/api/health">{t("healthLink")}</Link>}
       />
