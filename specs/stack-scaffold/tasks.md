@@ -85,7 +85,13 @@ Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task
   - Tests: None new — Vercel's build and deploy status is the signal, per `spec.md` → Testing strategy.
   - Verify: the production URL serves both locales and `/api/health` returns 200 with eight stages.
   - Files: `vercel.json` if required; otherwise dashboard configuration only.
-  - Blocked: requires user-provisioned credentials. Verified post-merge.
+  - Blocked: NOT DONE. The Vercel CLI is installed but unauthenticated, and creating accounts or entering credentials is out of bounds for the implementer. Handover steps:
+    1. `vercel login`, then `vercel link` in the repository root.
+    2. Set the package manager to pnpm in Vercel project settings.
+    3. Set production environment variables: `DATABASE_URL` (Supabase transaction pooler, port 6543), `DIRECT_URL` (session-mode pooler, port 5432), `NEXT_PUBLIC_SENTRY_DSN`, `INNGEST_EVENT_KEY`, `INNGEST_SIGNING_KEY`, and optionally `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` for source maps.
+    4. Add the repository secret `SUPABASE_MIGRATION_URL` (session-mode pooler URL) so `.github/workflows/migrate.yml` can apply migrations.
+    5. Register the production `/api/inngest` endpoint with the Inngest app.
+    Then verify: the production URL serves `/ja` and `/ko`, and `/api/health` returns 200 with eight stages.
 
 ## Task generation report
 
