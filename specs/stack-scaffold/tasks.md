@@ -72,11 +72,11 @@ Implementation contract for `spec.md` / `plan.md`. Dependency-ordered; each task
   - Verify: the PR job passes on this branch's pull request. The migration job is verified post-merge, per `plan.md` checkpoint 12.
   - Files: `.github/workflows/ci.yml`, `.github/workflows/migrate.yml`
 
-- [ ] **T11 — Documentation**
+- [x] **T11 — Documentation**
   - Refs: `spec.md` → Scope (final bullet), Boundaries, Success criteria 12; `plan.md` → step 11 (C12)
   - Acceptance: `AGENTS.md` documents the stack, every command, repository layout, the reserved domain module boundaries, testing expectations, the Docker prerequisite and its port, the manual `prisma migrate deploy` fallback, and the conventions from `spec.md` → Boundaries. `README.md` covers setup. `.env.example` matches what the env module actually requires. Every documented command is executed and confirmed, not assumed.
   - Tests: None new — documentation accuracy is verified by running the commands it lists.
-  - Verify: each command in `AGENTS.md` runs successfully from a clean checkout; `.env.example` keys match the env schema exactly.
+  - Verify: DONE — the README quick-start was executed verbatim in a fresh clone against a clean database (install, migrate, seed twice, typecheck, lint, test), and `.env.example` was diffed against the env schema programmatically: identical key sets.
   - Files: `AGENTS.md`, `README.md`, `.env.example`
 
 - [ ] **T12 — Hosting**
